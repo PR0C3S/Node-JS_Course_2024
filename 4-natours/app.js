@@ -82,16 +82,6 @@ const deleteTour = (req, res) => {
   });
 };
 
-//app.get('/api/v1/tours', getAllTours);
-//app.get('/api/v1/tours/:id', getTour);
-//app.post('/api/v1/tours', createTour);
-//? Application receives just the properties to update
-//app.patch('/api/v1/tours/:id', updateTour);
-//app.delete('/api/v1/tours/:id', deleteTour);
-
-//? Application receives the entire new updated object
-// app.put('/api/v1/tours/:id');
-
 app.route('/api/v1/tours').get(getAllTours).post(createTour);
 app
   .route('/api/v1/tours/:id')
