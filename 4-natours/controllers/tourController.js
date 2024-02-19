@@ -12,17 +12,23 @@ exports.getAllTours = (req, res) => {
   });
 };
 
-exports.getTour = (req, res) => {
-  const id = req.params.id * 1;
-  const tour = tours.find((el) => el.id === id);
+//It is like a before function but it is a middleware
+exports.checkID = (req, res, next, val) => {
+  console.log(`Tour id is: ${val}`);
 
-  //   if (id > tours.length) {
-  if (!tour) {
+  if (req.params.id * 1 > tours.length) {
     return res.status(404).json({
       status: 'fail',
       message: 'Invalid ID',
     });
+    next();
   }
+};
+
+exports.getTour = (req, res) => {
+  const id = req.params.id * 1;
+  const tour = tours.find((el) => el.id === id);
+
   res.status(200).json({
     status: 'success',
     data: { tour },
@@ -48,13 +54,6 @@ exports.createTour = (req, res) => {
 exports.updateTour = (req, res) => {
   const id = req.params.id * 1;
 
-  if (id > tours.length) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID',
-    });
-  }
-
   res.status(200).json({
     status: 'sucess',
     data: {
@@ -66,12 +65,6 @@ exports.updateTour = (req, res) => {
 exports.deleteTour = (req, res) => {
   const id = req.params.id * 1;
 
-  if (id > tours.length) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID',
-    });
-  }
   res.status(204).json({
     status: 'sucess',
     data: null,
