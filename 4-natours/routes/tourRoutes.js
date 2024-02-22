@@ -9,7 +9,7 @@ const router = express.Router();
 // if not, send back 400 bad request
 
 router
-  .router('/top-5-cheap')
+  .route('/top-5-cheap')
   .get(tourController.aliasTopTours, tourController.getAllTours);
 router
   .route('/')
