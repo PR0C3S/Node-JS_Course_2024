@@ -2,7 +2,30 @@ const Tour = require('../models/tourModel');
 
 exports.getAllTours = async (req, res) => {
   try {
-    const tours = await Tour.find();
+    //BUILD QUERY
+    //1) Filtering
+    const queryObj = { ...req.query };
+    const excludedFields = ['page', 'sort', 'limit', 'fields'];
+
+    excludedFields.forEach((el) => delete queryObj[el]);
+
+    // 2) Advanced filtering
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/\b(gte|g|lte|lt)\b/g, (match) => `$${match}`);
+
+    const query = await Tour.find(JSON.parse(queryStr));
+
+    //EXECUTE QUERY
+    const tours = await query;
+
+    //? Another way to filter data in the database
+    // const query = await Tour.find()
+    //   .where('duration')
+    //   .equals(req.query.duration * 1)
+    //   .where('difficulty')
+    //   .equals(req.query.difficulty);
+
+    //SEND RESPONSE
     res.status(200).json({
       status: 'success',
       results: tours.length,
