@@ -2,9 +2,8 @@ const fs = require('fs');
 const Tour = require('../../models/tourModel');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const { argv } = require('process');
-
 dotenv.config({ path: './config.env' });
+const { argv } = require('process');
 
 const DB = process.env.DATABASE.replace(
   '<PASSWORD>',
@@ -39,8 +38,8 @@ const deleteData = async () => {
   process.exit();
 };
 
-if (process.argv[2] === '--import') {
+if (argv[2] === '--import') {
   importData();
-} else if (process.argv[2] === '--delete') {
+} else if (argv[2] === '--delete') {
   deleteData();
 }

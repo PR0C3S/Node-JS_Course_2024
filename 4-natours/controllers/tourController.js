@@ -26,10 +26,10 @@ exports.getAllTours = async (req, res) => {
       results: tours.length,
       data: { tours },
     });
-  } catch (err) {
+  } catch (error) {
     res.status(404).json({
       status: 'fail',
-      message: err.message,
+      message: error.message,
     });
   }
 };
@@ -43,10 +43,10 @@ exports.getTour = async (req, res) => {
       status: 'success',
       data: { tour },
     });
-  } catch (err) {
+  } catch (error) {
     res.status(404).json({
       status: 'fail',
-      message: err.message,
+      message: error.message,
     });
   }
 };
@@ -62,10 +62,10 @@ exports.createTour = async (req, res) => {
       status: 'success',
       data: { tour: newTour },
     });
-  } catch (err) {
+  } catch (error) {
     res.status(400).json({
       status: 'fail',
-      message: err.message,
+      message: error.message,
     });
   }
 };
@@ -84,10 +84,10 @@ exports.updateTour = async (req, res) => {
         tour,
       },
     });
-  } catch (err) {
+  } catch (error) {
     res.status(404).json({
       status: 'fail',
-      message: err.message,
+      message: error.message,
     });
   }
 };
@@ -99,10 +99,44 @@ exports.deleteTour = async (req, res) => {
       status: 'sucess',
       data: null,
     });
-  } catch (err) {
+  } catch (error) {
     res.status(404).json({
       status: 'fail',
-      message: err.message,
+      message: error.message,
+    });
+  }
+};
+
+exports.getTourStats = async (req, res) => {
+  try {
+    const stats = await Tour.aggregate([
+      {
+        $match: { ratingsAverage: { $gte: 3 } },
+      },
+      {
+        $group: {
+          _id: { $toUpper: '$difficulty' },
+          num: { $sum: 1 },
+          numRatings: { $sum: '$ratingsQuantity' },
+          avgRating: { $avg: '$ratingsAverage' },
+          avgPrice: { $avg: '$price' },
+          minPrice: { $min: '$price' },
+          maxPrice: { $max: '$price' },
+        },
+      },
+      { $sort: { avgPrice: 1 } },
+      // {
+      //   $match: { _id: { $ne: 'EASY' } },
+      // },
+    ]);
+    res.status(200).json({
+      status: 'success',
+      data: { stats },
+    });
+  } catch (error) {
+    res.status(404).json({
+      status: 'fail',
+      message: error.message,
     });
   }
 };
